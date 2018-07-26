@@ -34,7 +34,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InsertFragment extends Fragment {
+public class InsertFragment extends Fragment{
 
     View view;
     EditText edtName, edtAge, edtMobile, edtEmail;
@@ -99,13 +99,13 @@ public class InsertFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        try {
+       /* try {
             if (!name.isEmpty() && !name.equals(null)) {
-                showData();
+                showData(name);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     View.OnClickListener onCheckboxClicked = new View.OnClickListener() {
@@ -138,7 +138,7 @@ public class InsertFragment extends Fragment {
         }
     };
 
-    private void showData() {
+    private void showData(final String name) {
         RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
                 .equalTo("name", name)
                 .findAll();

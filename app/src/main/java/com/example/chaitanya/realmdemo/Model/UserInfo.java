@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * @author : Chaitanya Tarole, Pune.
@@ -15,11 +17,17 @@ public class UserInfo extends RealmObject {
 
     @PrimaryKey
     private String name;
+
     private int age;
+
     private String mobile;
+
     private String Email;
+
     private String bloodgroup;
+
     private boolean status;
+
     RealmList<HobbiesModel> hobbies;
 
     public RealmList<HobbiesModel> getHobbies() {

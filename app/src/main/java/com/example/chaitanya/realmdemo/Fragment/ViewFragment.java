@@ -23,7 +23,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ViewFragment extends Fragment implements UserInfoAdapter.OnClick {
+public class ViewFragment extends Fragment {
 
     View view = null;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -75,16 +75,16 @@ public class ViewFragment extends Fragment implements UserInfoAdapter.OnClick {
 
             RealmResults<UserInfo> userInfos = realm.where(UserInfo.class).findAll();
 
-            userInfoAdapter = new UserInfoAdapter(this, userInfos, getActivity());
+           /* userInfoAdapter = new UserInfoAdapter(this, userInfos);
             recyclerView.setAdapter(userInfoAdapter);
-            userInfoAdapter.notifyDataSetChanged();
+            userInfoAdapter.notifyDataSetChanged();*/
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
+    /*@Override
     public void onUpdate(String name) {
         Bundle bundle=new Bundle();
         bundle.putString("name", name);
@@ -92,5 +92,5 @@ public class ViewFragment extends Fragment implements UserInfoAdapter.OnClick {
         insertFragment.setArguments(bundle);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, insertFragment).commit();
-    }
+    }*/
 }
