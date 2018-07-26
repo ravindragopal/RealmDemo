@@ -21,6 +21,7 @@ import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Fragment.InsertFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewFragment;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
+import com.example.chaitanya.realmdemo.Presenter;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 
@@ -30,8 +31,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity{
-
+public class MainActivity extends AppCompatActivity {
     /*FrameLayout fragment_container;
     FragmentTransaction transaction;
     Button btnAdd, btnView;*/
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         Realm.init(getApplicationContext());
-
 
         /*fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
         btnAdd = (Button) findViewById(R.id.btnAdd);
@@ -215,6 +214,7 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 userInfo.setStatus(false);
             }
+
 
             realm.beginTransaction();
             UserInfo realmUser = realm.copyToRealmOrUpdate(userInfo);
