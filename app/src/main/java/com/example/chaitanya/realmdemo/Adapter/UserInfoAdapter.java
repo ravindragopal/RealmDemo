@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +21,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
+import com.example.chaitanya.realmdemo.Activity.MainActivity;
+import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
 import com.example.chaitanya.realmdemo.Fragment.InsertFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewFragment;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
@@ -37,20 +41,10 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
     Activity objContext;
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 
-
-    public interface OnClick {
-        public abstract void onUpdate(String name);
-    }
-
-
-    public OnClick onClick;
-
-    public UserInfoAdapter(ViewFragment viewFragment, RealmResults<UserInfo> userInfos, Activity objContext) {
+    public UserInfoAdapter(Activity activity, RealmResults<UserInfo> userInfos) {
         this.userInfoArrayList.addAll(userInfos);
-        this.objContext = objContext;
-        onClick = (OnClick) viewFragment;
+        this.objContext = activity;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -63,14 +57,14 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
 
         final UserInfo userInfo = userInfoArrayList.get(position);
 
-        holder.txtName.setText(""+userInfo.getName());
+        holder.txtName.setText("" + userInfo.getName());
         holder.txtAge.setText("Age : " + userInfo.getAge());
         holder.txtMobile.setText("Mobile : " + userInfo.getMobile());
         if (userInfo.isStatus()) {
             holder.txtStatus.setText("Status : " + "Active");
         }
 
-        holder.viewItem.setOnClickListener(new View.OnClickListener() {
+        holder.imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(holder, holder.getAdapterPosition());
@@ -104,7 +98,10 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
     }
 
     private void update(final String name) {
-        onClick.onUpdate(name);
+        Intent intent = new Intent(objContext, MainActivity.class);
+        intent.putExtra("name", name);
+        objContext.startActivity(intent);
+        objContext.finish();
     }
 
     private void delete(final int position) {
