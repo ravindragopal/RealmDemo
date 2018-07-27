@@ -18,6 +18,8 @@ import com.example.chaitanya.realmdemo.R;
 import java.util.ArrayList;
 
 import io.realm.Case;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -31,6 +33,7 @@ public class ViewDataActivity extends AppCompatActivity {
     Realm realm;
     SearchView searchView;
     ImageView imgView;
+    RealmResults<UserInfo> userInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +54,13 @@ public class ViewDataActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
 
-        RealmResults<UserInfo> userInfos = realm.where(UserInfo.class).findAll();
-        showData(userInfos);
+        /*userInfos = realm.where(UserInfo.class).findAll();
+        showData(userInfos);*/
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RealmResults<UserInfo> userInfos = realm.where(UserInfo.class).findAll();
+                userInfos = realm.where(UserInfo.class).findAll();
                 showData(userInfos);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -90,7 +93,7 @@ public class ViewDataActivity extends AppCompatActivity {
 
                 } else {
 
-                    RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
+                    userInfos = realm.where(UserInfo.class)
                             .like("name", "*" + query + "*", Case.INSENSITIVE)
                             .findAll().sort("age");
                     showData(userInfos);
@@ -115,14 +118,14 @@ public class ViewDataActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.age:
-                        RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
+                        userInfos = realm.where(UserInfo.class)
                                 .findAll().sort("age");
                         showData(userInfos);
                         break;
                     case R.id.dob:
-                        RealmResults<UserInfo> userInfos1 = realm.where(UserInfo.class)
-                                .findAll().sort("date",Sort.ASCENDING);
-                        showData(userInfos1);
+                        userInfos = realm.where(UserInfo.class)
+                                .findAll().sort("date", Sort.ASCENDING);
+                        showData(userInfos);
                         break;
                 }
                 return false;
@@ -131,6 +134,28 @@ public class ViewDataActivity extends AppCompatActivity {
         popup.show();
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userInfos = realm.where(UserInfo.class).findAllAsync();
+        userInfos.addChangeListener(callback);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userInfos.removeAllChangeListeners();
+    }
+
+    private OrderedRealmCollectionChangeListener<RealmResults<UserInfo>> callback = new OrderedRealmCollectionChangeListener<RealmResults<UserInfo>>() {
+        @Override
+        public void onChange(RealmResults<UserInfo> userInfos, OrderedCollectionChangeSet changeSet) {
+            if (userInfos.isLoaded()) {
+                showData(userInfos);
+            }
+        }
+    };
 
     private void showData(RealmResults<UserInfo> userInfos) {
         try {
