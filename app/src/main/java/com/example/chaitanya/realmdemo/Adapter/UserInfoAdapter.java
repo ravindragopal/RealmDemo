@@ -1,30 +1,19 @@
 package com.example.chaitanya.realmdemo.Adapter;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
-import com.example.chaitanya.realmdemo.Activity.MainActivity;
-import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
-import com.example.chaitanya.realmdemo.Fragment.InsertFragment;
-import com.example.chaitanya.realmdemo.Fragment.ViewFragment;
+import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 
@@ -67,9 +56,12 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
         holder.imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("id@@",userInfo.getId().toString());
                 showDialog(holder, holder.getAdapterPosition());
             }
         });
+
+        Log.d("id@@",userInfo.getId().toString());
 
     }
 
@@ -98,7 +90,7 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
     }
 
     private void update(final String name) {
-        Intent intent = new Intent(objContext, MainActivity.class);
+        Intent intent = new Intent(objContext, AddDataActivity.class);
         intent.putExtra("name", name);
         objContext.startActivity(intent);
         objContext.finish();

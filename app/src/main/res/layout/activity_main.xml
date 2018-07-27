@@ -53,6 +53,16 @@
                 android:padding="10dp"
                 android:textColor="@android:color/black" />
 
+
+            <EditText
+                android:id="@+id/edtDOB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date Of Birth"
+                android:editable="false"
+                android:padding="10dp"
+                android:textColor="@android:color/black" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -170,7 +180,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MainActivity">
+    tools:context=".Activity.AddDataActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

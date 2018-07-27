@@ -1,7 +1,9 @@
 package com.example.chaitanya.realmdemo.Model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import io.realm.MutableRealmInteger;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -15,6 +17,8 @@ import io.realm.annotations.Required;
  */
 public class UserInfo extends RealmObject {
 
+    final MutableRealmInteger id = MutableRealmInteger.valueOf(0);
+
     @PrimaryKey
     private String name;
 
@@ -24,11 +28,25 @@ public class UserInfo extends RealmObject {
 
     private String Email;
 
+    private Date date;
+
     private String bloodgroup;
 
     private boolean status;
 
     RealmList<HobbiesModel> hobbies;
+
+    public MutableRealmInteger getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public RealmList<HobbiesModel> getHobbies() {
         return hobbies;

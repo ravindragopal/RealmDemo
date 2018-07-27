@@ -1,5 +1,8 @@
 package com.example.chaitanya.realmdemo.Activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,9 +14,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -21,22 +26,25 @@ import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Fragment.InsertFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewFragment;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
-import com.example.chaitanya.realmdemo.Presenter;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 
 import java.lang.reflect.GenericArrayType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity {
+public class AddDataActivity extends AppCompatActivity {
     /*FrameLayout fragment_container;
     FragmentTransaction transaction;
     Button btnAdd, btnView;*/
 
-    EditText edtName, edtAge, edtMobile, edtEmail;
+    EditText edtName, edtAge, edtMobile, edtEmail, edtDOB;
     RadioButton rdbActive, rdbInActive;
     Button btnSubmit, btnUpdate, btnView;
     Spinner spBloodGroup;
@@ -44,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
     HobbiesModel hobbies = new HobbiesModel();
     RealmList<HobbiesModel> hobbiesModelRealmList = new RealmList<>();
     ArrayAdapter arrayAdapter;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+    SearchView searchView;
     Realm realm;
 
     @Override
@@ -52,32 +62,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Realm.init(getApplicationContext());
-
-        /*fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
-        btnAdd = (Button) findViewById(R.id.btnAdd);
-        btnView = (Button) findViewById(R.id.btnView);
-
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertFragment();
-            }
-        });
-
-        btnView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewFragment();
-            }
-        });*/
-
-
         realm = Realm.getDefaultInstance();
+
+        searchView = (SearchView) findViewById(R.id.searchView);
         edtName = (EditText) findViewById(R.id.edtName);
         edtAge = (EditText) findViewById(R.id.edtAge);
         edtMobile = (EditText) findViewById(R.id.edtMobile);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
+        edtDOB = (EditText) findViewById(R.id.edtDOB);
         rdbActive = (RadioButton) findViewById(R.id.rdbActive);
         rdbInActive = (RadioButton) findViewById(R.id.rdbInActive);
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
@@ -98,12 +90,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                insertData();
-            }
-        });*/
 
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +101,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
         arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.bloodgroup));
+
+        edtDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDateTimeField();
+            }
+        });
+
+
+        try {
+            Intent intent = getIntent();
+            String name = intent.getStringExtra("name");
+            if (!name.isEmpty() && !name.equals(null)) {
+                showData(name);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setDateTimeField() {
+        Calendar newCalendar = Calendar.getInstance();
+        DatePickerDialog fromDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                edtDOB.setText(dateFormat.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        fromDatePickerDialog.show();
     }
 
 
@@ -148,33 +167,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-   /* private void updateData() {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setName(edtName.getText().toString());
-        userInfo.setAge(Integer.parseInt(edtAge.getText().toString()));
-        userInfo.setMobile(edtMobile.getText().toString());
-        userInfo.setEmail(edtEmail.getText().toString());
-        userInfo.setBloodgroup(spBloodGroup.getSelectedItem().toString());
-        if (rdbActive.isChecked()) {
-            userInfo.setStatus(true);
-        } else {
-            userInfo.setStatus(false);
-        }
-
-        realm.beginTransaction();
-        UserInfo realmUser = realm.copyToRealmOrUpdate(userInfo);
-        realm.commitTransaction();
-
-        edtName.setText("");
-        edtAge.setText("");
-        edtMobile.setText("");
-        edtEmail.setText("");
-        spBloodGroup.setSelection(0);
-        ckbReading.setChecked(false);
-        ckbWriting.setChecked(false);
-        ckbDrawing.setChecked(false);
-        rdbActive.setChecked(true);
-    }*/
 
     private void insertData() {
         try {
@@ -195,18 +187,24 @@ public class MainActivity extends AppCompatActivity {
                 edtEmail.setError("invalid");
                 return;
             }
+            if (edtDOB.getText().toString().isEmpty()) {
+                edtDOB.setError("invalid");
+                return;
+            }
             if (spBloodGroup.getSelectedItem().toString().equalsIgnoreCase("Select")) {
                 Toast.makeText(getApplicationContext(), "Select BloodGroup", Toast.LENGTH_LONG).show();
                 return;
             }
 
             UserInfo userInfo = new UserInfo();
+            userInfo.getId().increment(1);
             userInfo.setName(edtName.getText().toString());
             userInfo.setAge(Integer.parseInt(edtAge.getText().toString()));
             userInfo.setMobile(edtMobile.getText().toString());
             userInfo.setEmail(edtEmail.getText().toString());
+            userInfo.setDate(dateFormat.parse(edtDOB.getText().toString()));
             userInfo.setBloodgroup(spBloodGroup.getSelectedItem().toString());
-            hobbiesModelRealmList.clear();
+//            hobbiesModelRealmList.clear();
             hobbiesModelRealmList.add(hobbies);
             userInfo.setHobbies(hobbiesModelRealmList);
             if (rdbActive.isChecked()) {
@@ -236,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
     }
@@ -247,15 +247,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            Intent intent = getIntent();
-            String name = intent.getStringExtra("name");
-            if (!name.isEmpty() && !name.equals(null)) {
-                showData(name);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -273,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         edtAge.setText("" + userInfos.get(0).getAge());
         edtMobile.setText("" + userInfos.get(0).getMobile());
         edtEmail.setText("" + userInfos.get(0).getEmail());
+        edtDOB.setText("" + dateFormat.format(userInfos.get(0).getDate()));
 
         int spinnerPosition = arrayAdapter.getPosition(userInfos.get(0).getBloodgroup());
         spBloodGroup.setSelection(spinnerPosition);
@@ -295,31 +287,4 @@ public class MainActivity extends AppCompatActivity {
             rdbInActive.setChecked(true);
         }
     }
-
-
-//    @Override
-//    public void onShow(String name) {
-//        showData(name);
-//    }
-
-  /*  @Override
-    protected void onStart() {
-        super.onStart();
-
-        Fragment insertFragment = new InsertFragment();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container, insertFragment).commit();
-    }
-
-    private void insertFragment() {
-        Fragment insertFragment = new InsertFragment();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, insertFragment).commit();
-    }
-
-    private void viewFragment() {
-        Fragment viewFragment = new ViewFragment();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, viewFragment).commit();
-    }*/
 }
