@@ -2,6 +2,7 @@ package com.example.chaitanya.realmdemo.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,39 +13,40 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-
 import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 
-import java.util.ArrayList;
-
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
 /**
- * TODO: Replace the implementation with code for your data type.
+ * @author : Chaitanya Tarole, Pune.
+ * @since : 30/7/18,5:16 PM.
+ * For : ISS 24/7, Pune.
  */
-public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder> {
+public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,UserRecyclerViewAdapter.ViewHolder> {
+
 
     Activity objContext;
-    ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 
-    public UserInfoAdapter(Activity activity, RealmResults<UserInfo> userInfos) {
-        this.userInfoArrayList.addAll(userInfos);
+    public UserRecyclerViewAdapter(@Nullable OrderedRealmCollection<UserInfo> data,Activity activity) {
+        super(data, true);
         this.objContext = activity;
+        setHasStableIds(true);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public UserRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-
-        final UserInfo userInfo = userInfoArrayList.get(position);
+    public void onBindViewHolder(final UserRecyclerViewAdapter.ViewHolder holder, int position) {
+        final UserInfo userInfo = getItem(position);
 
         holder.txtName.setText("" + userInfo.getName());
         holder.txtAge.setText("Age : " + userInfo.getAge());
@@ -62,9 +64,7 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
         });
 
         Log.d("id@@",""+userInfo.getId());
-
     }
-
 
     private void showDialog(final ViewHolder holder, final int position) {
         PopupMenu popup = new PopupMenu(objContext, holder.imgView);
@@ -105,24 +105,17 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
             public void execute(Realm realm) {
                 UserInfo userInfo = results.get(position);
                 userInfo.deleteFromRealm();
-                userInfoArrayList.remove(position);
                 notifyDataSetChanged();
             }
         });
 
     }
 
-    @Override
-    public int getItemCount() {
-        return userInfoArrayList.size();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         View viewItem;
-        private TextView txtName, txtAge, txtMobile, txtStatus;
-        private ImageView imgView;
-
+        public TextView txtName, txtAge, txtMobile, txtStatus;
+        public ImageView imgView;
         public ViewHolder(View view) {
             super(view);
             viewItem = view;
@@ -132,6 +125,5 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
             txtStatus = (TextView) view.findViewById(R.id.txtStatus);
             imgView = (ImageView) view.findViewById(R.id.imgView);
         }
-
     }
 }

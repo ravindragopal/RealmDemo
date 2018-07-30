@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
+import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 
@@ -24,11 +26,12 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class ViewDataActivity extends AppCompatActivity {
+public class ViewDataActivity extends AppCompatActivity{
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     UserInfoAdapter userInfoAdapter;
+    UserRecyclerViewAdapter userRecyclerViewAdapter;
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
     Realm realm;
     SearchView searchView;
@@ -160,9 +163,13 @@ public class ViewDataActivity extends AppCompatActivity {
     private void showData(RealmResults<UserInfo> userInfos) {
         try {
 //            RealmResults<UserInfo> userInfos = realm.where(UserInfo.class).findAll();
-            userInfoAdapter = new UserInfoAdapter(ViewDataActivity.this, userInfos);
+            /*userInfoAdapter = new UserInfoAdapter(ViewDataActivity.this, userInfos);
             recyclerView.setAdapter(userInfoAdapter);
-            userInfoAdapter.notifyDataSetChanged();
+            userInfoAdapter.notifyDataSetChanged();*/
+
+            userRecyclerViewAdapter = new UserRecyclerViewAdapter(userInfos,ViewDataActivity.this);
+            recyclerView.setAdapter(userRecyclerViewAdapter);
+            userRecyclerViewAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
             e.printStackTrace();

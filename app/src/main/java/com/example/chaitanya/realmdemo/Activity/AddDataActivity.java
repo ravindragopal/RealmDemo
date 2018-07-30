@@ -196,23 +196,43 @@ public class AddDataActivity extends AppCompatActivity {
                 return;
             }
 
+            Number currentIdNum = realm.where(UserInfo.class).max("id");
+            int nextId;
+            if(currentIdNum == null){
+                nextId = 1;
+            }else {
+                nextId = currentIdNum.intValue() + 1;
+            }
+
+
+            /*realm.beginTransaction();
+            final HobbiesModel hobbiesModel = realm.copyToRealm(hobbies);
+            realm.commitTransaction();*/
+
+            /*realm.beginTransaction();
+            HobbiesModel hobbiesModel = realm.createObject(HobbiesModel.class);
+            hobbiesModel.setReading(hobbies.getReading());
+            hobbiesModel.setWriting(hobbies.getWriting());
+            hobbiesModel.setDrawing(hobbies.getDrawing());
+            realm.commitTransaction();*/
+
             UserInfo userInfo = new UserInfo();
-            userInfo.getId().increment(1);
+            userInfo.setId(nextId);
             userInfo.setName(edtName.getText().toString());
             userInfo.setAge(Integer.parseInt(edtAge.getText().toString()));
             userInfo.setMobile(edtMobile.getText().toString());
             userInfo.setEmail(edtEmail.getText().toString());
             userInfo.setDate(dateFormat.parse(edtDOB.getText().toString()));
             userInfo.setBloodgroup(spBloodGroup.getSelectedItem().toString());
-//            hobbiesModelRealmList.clear();
+            hobbiesModelRealmList.clear();
             hobbiesModelRealmList.add(hobbies);
             userInfo.setHobbies(hobbiesModelRealmList);
+//            userInfo.getHobbies().add(hobbiesModel);
             if (rdbActive.isChecked()) {
                 userInfo.setStatus(true);
             } else {
                 userInfo.setStatus(false);
             }
-
 
             realm.beginTransaction();
             UserInfo realmUser = realm.copyToRealmOrUpdate(userInfo);
