@@ -17,8 +17,14 @@ import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 
+import io.realm.ObjectChangeSet;
+import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmModel;
+import io.realm.RealmObjectChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
@@ -27,15 +33,25 @@ import io.realm.RealmResults;
  * @since : 30/7/18,5:16 PM.
  * For : ISS 24/7, Pune.
  */
-public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,UserRecyclerViewAdapter.ViewHolder> {
+public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo, UserRecyclerViewAdapter.ViewHolder> {
 
 
     Activity objContext;
 
-    public UserRecyclerViewAdapter(@Nullable OrderedRealmCollection<UserInfo> data,Activity activity) {
-        super(data, true);
+
+    private OrderedRealmCollection<UserInfo> adapterData;
+
+
+
+    public UserRecyclerViewAdapter(@Nullable OrderedRealmCollection<UserInfo> data, Activity activity) {
+        super(data, true, true);
         this.objContext = activity;
         setHasStableIds(true);
+    }
+
+    @Override
+    public void updateData(@Nullable OrderedRealmCollection<UserInfo> data) {
+        super.updateData(data);
     }
 
     @Override
@@ -44,9 +60,12 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,U
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(final UserRecyclerViewAdapter.ViewHolder holder, int position) {
         final UserInfo userInfo = getItem(position);
+
+        holder.bind(userInfo);
 
         holder.txtName.setText("" + userInfo.getName());
         holder.txtAge.setText("Age : " + userInfo.getAge());
@@ -58,13 +77,62 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,U
         holder.imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("id@@",""+userInfo.getId());
                 showDialog(holder, holder.getAdapterPosition());
             }
         });
-
-        Log.d("id@@",""+userInfo.getId());
     }
+
+    @Override
+    public long getItemId(int index) {
+        return getItem(index).getId();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        View viewItem;
+        public TextView txtName, txtAge, txtMobile, txtStatus;
+        public ImageView imgView;
+
+        public ViewHolder(View view) {
+            super(view);
+            viewItem = view;
+            txtName = (TextView) view.findViewById(R.id.txtName);
+            txtAge = (TextView) view.findViewById(R.id.txtAge);
+            txtMobile = (TextView) view.findViewById(R.id.txtMobile);
+            txtStatus = (TextView) view.findViewById(R.id.txtStatus);
+            imgView = (ImageView) view.findViewById(R.id.imgView);
+        }
+
+        RealmObjectChangeListener realmChangeListener = new RealmObjectChangeListener<UserInfo>() {
+            @Override
+            public void onChange(UserInfo userInfo, ObjectChangeSet changeSet) {
+
+                if (changeSet.isFieldChanged("name")) {
+                    txtName.setText(userInfo.getName());
+                }
+                if (changeSet.isFieldChanged("age")) {
+                    txtAge.setText(userInfo.getAge());
+                }
+                if (changeSet.isFieldChanged("mobile")) {
+                    txtMobile.setText(userInfo.getMobile());
+                }
+            }
+        };
+
+        UserInfo userInfo;
+
+        private void bind(UserInfo userInfo){
+            if(this.userInfo != null && this.userInfo.isValid()) {
+                this.userInfo.removeAllChangeListeners();
+            }
+            this.userInfo = userInfo;
+            userInfo.addChangeListener(realmChangeListener);
+        }
+
+
+    }
+
 
     private void showDialog(final ViewHolder holder, final int position) {
         PopupMenu popup = new PopupMenu(objContext, holder.imgView);
@@ -74,7 +142,7 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,U
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.view:
-
+                        addNew();
                         break;
                     case R.id.update:
                         update(holder.txtName.getText().toString());
@@ -89,11 +157,18 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,U
         popup.show();
     }
 
+    private void addNew() {
+        Intent intent = new Intent(objContext, AddDataActivity.class);
+        intent.putExtra("name", "");
+        objContext.startActivity(intent);
+//        objContext.finish();
+    }
+
     private void update(final String name) {
         Intent intent = new Intent(objContext, AddDataActivity.class);
         intent.putExtra("name", name);
         objContext.startActivity(intent);
-        objContext.finish();
+//        objContext.finish();
     }
 
     private void delete(final int position) {
@@ -111,19 +186,4 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo,U
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        View viewItem;
-        public TextView txtName, txtAge, txtMobile, txtStatus;
-        public ImageView imgView;
-        public ViewHolder(View view) {
-            super(view);
-            viewItem = view;
-            txtName = (TextView) view.findViewById(R.id.txtName);
-            txtAge = (TextView) view.findViewById(R.id.txtAge);
-            txtMobile = (TextView) view.findViewById(R.id.txtMobile);
-            txtStatus = (TextView) view.findViewById(R.id.txtStatus);
-            imgView = (ImageView) view.findViewById(R.id.imgView);
-        }
-    }
 }

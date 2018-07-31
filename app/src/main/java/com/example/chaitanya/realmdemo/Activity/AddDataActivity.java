@@ -40,21 +40,19 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class AddDataActivity extends AppCompatActivity {
-    /*FrameLayout fragment_container;
-    FragmentTransaction transaction;
-    Button btnAdd, btnView;*/
 
     EditText edtName, edtAge, edtMobile, edtEmail, edtDOB;
     RadioButton rdbActive, rdbInActive;
     Button btnSubmit, btnUpdate, btnView;
     Spinner spBloodGroup;
     CheckBox ckbReading, ckbWriting, ckbDrawing;
+    SearchView searchView;
+
     HobbiesModel hobbies = new HobbiesModel();
     RealmList<HobbiesModel> hobbiesModelRealmList = new RealmList<>();
     ArrayAdapter arrayAdapter;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-    SearchView searchView;
     Realm realm;
 
     @Override
@@ -63,6 +61,30 @@ public class AddDataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         realm = Realm.getDefaultInstance();
+
+        intilization();
+
+        try {
+            Intent intent = getIntent();
+            String name = intent.getStringExtra("name");
+            if (!name.isEmpty() && !name.equals(null)) {
+                showData(name);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    private void intilization() {
+
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.bloodgroup));
 
         searchView = (SearchView) findViewById(R.id.searchView);
         edtName = (EditText) findViewById(R.id.edtName);
@@ -90,7 +112,6 @@ public class AddDataActivity extends AppCompatActivity {
             }
         });
 
-
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,25 +121,12 @@ public class AddDataActivity extends AppCompatActivity {
             }
         });
 
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.bloodgroup));
-
         edtDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDateTimeField();
             }
         });
-
-
-        try {
-            Intent intent = getIntent();
-            String name = intent.getStringExtra("name");
-            if (!name.isEmpty() && !name.equals(null)) {
-                showData(name);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -198,23 +206,11 @@ public class AddDataActivity extends AppCompatActivity {
 
             Number currentIdNum = realm.where(UserInfo.class).max("id");
             int nextId;
-            if(currentIdNum == null){
+            if (currentIdNum == null) {
                 nextId = 1;
-            }else {
+            } else {
                 nextId = currentIdNum.intValue() + 1;
             }
-
-
-            /*realm.beginTransaction();
-            final HobbiesModel hobbiesModel = realm.copyToRealm(hobbies);
-            realm.commitTransaction();*/
-
-            /*realm.beginTransaction();
-            HobbiesModel hobbiesModel = realm.createObject(HobbiesModel.class);
-            hobbiesModel.setReading(hobbies.getReading());
-            hobbiesModel.setWriting(hobbies.getWriting());
-            hobbiesModel.setDrawing(hobbies.getDrawing());
-            realm.commitTransaction();*/
 
             UserInfo userInfo = new UserInfo();
             userInfo.setId(nextId);
@@ -227,7 +223,6 @@ public class AddDataActivity extends AppCompatActivity {
             hobbiesModelRealmList.clear();
             hobbiesModelRealmList.add(hobbies);
             userInfo.setHobbies(hobbiesModelRealmList);
-//            userInfo.getHobbies().add(hobbiesModel);
             if (rdbActive.isChecked()) {
                 userInfo.setStatus(true);
             } else {
@@ -248,8 +243,8 @@ public class AddDataActivity extends AppCompatActivity {
             ckbDrawing.setChecked(false);
             rdbActive.setChecked(true);
 
-            Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
+            startActivity(intent);*/
             finish();
 
         } catch (NumberFormatException e) {
@@ -264,16 +259,6 @@ public class AddDataActivity extends AppCompatActivity {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }
 
     private void showData(final String name) {
         RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
