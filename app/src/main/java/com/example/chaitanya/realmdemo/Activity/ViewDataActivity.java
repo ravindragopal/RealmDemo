@@ -1,5 +1,6 @@
 package com.example.chaitanya.realmdemo.Activity;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
+import com.example.chaitanya.realmdemo.Thread.Add;
+import com.example.chaitanya.realmdemo.Thread.Remove;
 
 import java.util.ArrayList;
 
@@ -37,17 +40,23 @@ public class ViewDataActivity extends AppCompatActivity {
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
     Realm realm;
     SearchView searchView;
-    ImageView imgView;
+    ImageView imgView,imgAdd;
     public RealmResults<UserInfo> userInfos;
 
     RealmChangeListener<RealmResults<UserInfo>> listener = new RealmChangeListener<RealmResults<UserInfo>>() {
         @Override
         public void onChange(RealmResults<UserInfo> UserInfo) {
-            if(UserInfo.isLoaded()) {
+            if (UserInfo.isLoaded()) {
                 userRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
     };
+
+
+    int contents;
+    boolean available = true;
+
+    int nextId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +71,64 @@ public class ViewDataActivity extends AppCompatActivity {
         userInfos.addChangeListener(listener);
         showData();
 
-//        userInfos.addChangeListener(callback);
-//        Log.d("@@","onCreate");
+    }
 
+    public synchronized void add(int value) {
+
+        Realm realm = Realm.getDefaultInstance();
+        Number currentIdNum = realm.where(UserInfo.class).max("id");
+        if (currentIdNum == null) {
+            nextId = 1;
+        } else {
+            nextId = currentIdNum.intValue() + 1;
+        }
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(nextId);
+        userInfo.setName("ttt" + nextId);
+        userInfo.setAge(11);
+        userInfo.setMobile("1234567890");
+        userInfo.setEmail("w@gmail.com");
+//        userInfo.setDate(dateFormat.parse(edtDOB.getText().toString()));
+//        userInfo.setBloodgroup(spBloodGroup.getSelectedItem().toString());
+        userInfo.setStatus(true);
+
+        realm.beginTransaction();
+        UserInfo realmUser = realm.copyToRealmOrUpdate(userInfo);
+        realm.commitTransaction();
+
+        contents = value;
+    }
+
+    public synchronized int remove() {
+        Realm realm = Realm.getDefaultInstance();
+
+        final RealmResults<UserInfo> results = realm.where(UserInfo.class).findAll();
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                UserInfo userInfo = results.last();
+                userInfo.deleteFromRealm();
+            }
+        });
+
+        return contents;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        Add add = new Add(this);
+//        Remove remove = new Remove(this);
+//        add.start();
+//        remove.start();
     }
 
     @Override
@@ -97,6 +156,7 @@ public class ViewDataActivity extends AppCompatActivity {
 
         searchView = (SearchView) findViewById(R.id.searchView);
         imgView = (ImageView) findViewById(R.id.imgView);
+        imgAdd = (ImageView) findViewById(R.id.imgAdd);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
@@ -122,7 +182,7 @@ public class ViewDataActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String query) {
                 if (query.isEmpty() || query.equals(null)) {
 
-                     userInfos = realm.where(UserInfo.class).findAllAsync();
+                    userInfos = realm.where(UserInfo.class).findAllAsync();
                     userRecyclerViewAdapter.updateData(userInfos);
 //                    showData(userInfos);
 
@@ -142,6 +202,15 @@ public class ViewDataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 shortData();
+            }
+        });
+
+        imgAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
+                intent.putExtra("name", "");
+                startActivity(intent);
             }
         });
     }

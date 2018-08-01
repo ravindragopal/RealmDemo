@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.AddDataActivity"></activity>
+        <activity android:name=".Activity.AddDataActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            />
 
     </application>
 

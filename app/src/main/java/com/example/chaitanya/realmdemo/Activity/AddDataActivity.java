@@ -4,11 +4,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -74,11 +76,74 @@ public class AddDataActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Log.d("@", "onCreate");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d("@", "onRestoreInstanceState");
+        edtName.setText(savedInstanceState.getString("edtName"));
+        edtAge.setText(savedInstanceState.getString("edtAge"));
+        edtMobile.setText(savedInstanceState.getString("edtMobile"));
+        edtEmail.setText(savedInstanceState.getString("edtEmail"));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d("@", "onSaveInstanceState");
+        outState.putString("edtName", edtName.getText().toString());
+        outState.putString("edtAge", edtAge.getText().toString());
+        outState.putString("edtMobile", edtMobile.getText().toString());
+        outState.putString("edtEmail", edtEmail.getText().toString());
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("@", "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("@", "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("@", "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("@", "onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("@", "onRestart");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("@", "onDestroy");
         realm.close();
     }
 
@@ -254,6 +319,7 @@ public class AddDataActivity extends AppCompatActivity {
         }
 
     }
+
 
     public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
