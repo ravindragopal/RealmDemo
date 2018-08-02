@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.InsertFragment">
+    tools:context=".Fragment.AddDataFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
@@ -53,6 +53,16 @@
                 android:padding="10dp"
                 android:textColor="@android:color/black" />
 
+
+            <EditText
+                android:id="@+id/edtDOB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date Of Birth"
+                android:editable="false"
+                android:padding="10dp"
+                android:textColor="@android:color/black" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,21 +88,18 @@
                 android:id="@+id/ckbReading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onCheckboxClicked"
                 android:text="Reading" />
 
             <CheckBox
                 android:id="@+id/ckbWriting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onCheckboxClicked"
                 android:text="Writing" />
 
             <CheckBox
                 android:id="@+id/ckbDrawing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onCheckboxClicked"
                 android:text="Drawing" />
 
             <TextView
@@ -145,7 +152,16 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:visibility="gone"
                     android:text="Update" />
+
+                <Button
+                    android:id="@+id/btnView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="View" />
 
             </LinearLayout>
 
@@ -154,3 +170,4 @@
 
     </ScrollView>
 </FrameLayout>
+

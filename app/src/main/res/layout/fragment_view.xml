@@ -3,21 +3,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.ViewFragment">
+    tools:context=".Fragment.ViewDataFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <android.support.v7.widget.RecyclerView
+        <SearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:id="@+id/recyclerView"
-            android:padding="10dp"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:queryHint="enter name.."></SearchView>
 
-        </android.support.v7.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <ImageView
+                android:id="@+id/imgView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/option" />
+
+            <ImageView
+                android:id="@+id/imgAdd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_add" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipeRefreshLayout"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="50dp">-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:padding="10dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
 </FrameLayout>

@@ -1,42 +1,46 @@
-package com.example.chaitanya.realmdemo.Activity;
+package com.example.chaitanya.realmdemo.Fragment;
 
+
+import android.arch.lifecycle.Lifecycle;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 
+import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
+import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
-import com.example.chaitanya.realmdemo.Fragment.AddDataFragment;
-import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
-import com.example.chaitanya.realmdemo.Thread.Add;
-import com.example.chaitanya.realmdemo.Thread.Remove;
 
 import java.util.ArrayList;
 
 import io.realm.Case;
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmObjectChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class ViewDataActivity extends AppCompatActivity implements ViewDataFragment.OnCallFragment {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ViewDataFragment extends Fragment {
 
+    View view = null;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     UserInfoAdapter userInfoAdapter;
@@ -46,7 +50,16 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
     SearchView searchView;
     ImageView imgView, imgAdd;
     public RealmResults<UserInfo> userInfos;
-/*
+    int contents;
+    int nextId;
+
+    public interface OnCallFragment{
+        public void onClickAddButton();
+    }
+
+    public OnCallFragment onCallFragment;
+
+
     RealmChangeListener<RealmResults<UserInfo>> listener = new RealmChangeListener<RealmResults<UserInfo>>() {
         @Override
         public void onChange(RealmResults<UserInfo> UserInfo) {
@@ -54,46 +67,60 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
                 userRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
-    };*/
+    };
 
 
-    int contents;
-    int nextId;
-
-    FragmentTransaction fragmentTransaction;
+    public ViewDataFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("@", "onAttach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_data);
+        Log.d("@", "onCreate");
+    }
 
-        Log.d("V@", "onCreate");
-//        realm = Realm.getDefaultInstance();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_view, container, false);
+        Log.d("@", "onCreateView");
 
-//        initilization();
+        realm = Realm.getDefaultInstance();
 
-       /* userInfos = realm.where(UserInfo.class).findAllAsync();
+        initilization();
+
+        onCallFragment = (OnCallFragment)getActivity();
+
+        userInfos = realm.where(UserInfo.class).findAllAsync();
         userInfos.addChangeListener(listener);
-        showData();*/
+        showData();
 
-        Fragment fragmentView = new ViewDataFragment();
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.framLayout, fragmentView);
-        fragmentTransaction.commit();
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d("@", "onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
         super.onStart();
-        Log.d("V@", "onStart");
+        Log.d("@", "onStart");
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        Log.d("V@", "onResume");
-        super.onResume();
-//
+        Log.d("@", "onResume");
 //        Add add = new Add(this);
 //        Remove remove = new Remove(this);
 //        add.start();
@@ -101,27 +128,34 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        Log.d("V@", "onPause");
+        Log.d("@", "onPause");
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
-        Log.d("V@", "onStop");
+        Log.d("@", "onStop");
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("V@", "onRestart");
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("@", "onDestroyView");
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-        Log.d("V@", "onDestroy");
+        Log.d("@", "onDestroy");
+        userInfos.removeAllChangeListeners();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d("@", "onDetach");
+        super.onDetach();
     }
 
     public synchronized void add(int value) {
@@ -169,12 +203,12 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
 
     private void initilization() {
 
-        searchView = (SearchView) findViewById(R.id.searchView);
-        imgView = (ImageView) findViewById(R.id.imgView);
-        imgAdd = (ImageView) findViewById(R.id.imgAdd);
+        searchView = (SearchView) view.findViewById(R.id.searchView);
+        imgView = (ImageView) view.findViewById(R.id.imgView);
+        imgAdd = (ImageView) view.findViewById(R.id.imgAdd);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
 
@@ -223,16 +257,24 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         imgAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
+                /*Intent intent = new Intent(getActivity(), AddDataActivity.class);
                 intent.putExtra("name", "");
-                startActivity(intent);
+                startActivity(intent);*/
+
+                /*Fragment fragment = new AddDataFragment();
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.framLayout, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();*/
+
+                onCallFragment.onClickAddButton();
             }
         });
     }
 
     private void shortData() {
 
-        PopupMenu popup = new PopupMenu(this, imgView);
+        PopupMenu popup = new PopupMenu(getActivity(), imgView);
         popup.inflate(R.menu.sort_menu);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -259,21 +301,11 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
 
     private void showData() {
         try {
-            userRecyclerViewAdapter = new UserRecyclerViewAdapter(userInfos, ViewDataActivity.this);
+            userRecyclerViewAdapter = new UserRecyclerViewAdapter(userInfos, getActivity());
             recyclerView.setAdapter(userRecyclerViewAdapter);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void onClickAddButton() {
-
-//        fragmentTransaction.remove(fragment);
-        Fragment fragmentAdd = new AddDataFragment();
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.framLayout, fragmentAdd);
-//        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 }

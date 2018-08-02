@@ -1,14 +1,20 @@
-package com.example.chaitanya.realmdemo.Activity;
+package com.example.chaitanya.realmdemo.Fragment;
+
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,27 +25,36 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
+import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
-import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
+import com.example.chaitanya.realmdemo.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Set;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class AddDataActivity extends AppCompatActivity {
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AddDataFragment extends Fragment {
+
+    View view;
     EditText edtName, edtAge, edtMobile, edtEmail, edtDOB;
     RadioButton rdbActive, rdbInActive;
     Button btnSubmit, btnUpdate, btnView;
     Spinner spBloodGroup;
     CheckBox ckbReading, ckbWriting, ckbDrawing;
     SearchView searchView;
-
     HobbiesModel hobbies = new HobbiesModel();
     RealmList<HobbiesModel> hobbiesModelRealmList = new RealmList<>();
     ArrayAdapter arrayAdapter;
@@ -47,36 +62,111 @@ public class AddDataActivity extends AppCompatActivity {
 
     Realm realm;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public AddDataFragment() {
+        // Required empty public constructor
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("@", "onAttach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("@", "onCreate");
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_insert, container, false);
+        Log.d("@", "onCreateView");
         realm = Realm.getDefaultInstance();
 
         intilization();
 
-        try {
-            Intent intent = getIntent();
+        /*try {
+            Intent intent = getActivity().getIntent();
             String name = intent.getStringExtra("name");
             if (!name.isEmpty() && !name.equals(null)) {
                 showData(name);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         Log.d("@", "onCreate");
+
+        return view;
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("@", "onRestoreInstanceState");
-        edtName.setText(savedInstanceState.getString("edtName"));
-        edtAge.setText(savedInstanceState.getString("edtAge"));
-        edtMobile.setText(savedInstanceState.getString("edtMobile"));
-        edtEmail.setText(savedInstanceState.getString("edtEmail"));
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d("@", "onActivityCreated");
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("@", "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("@", "onResume");
+//        Add add = new Add(this);
+//        Remove remove = new Remove(this);
+//        add.start();
+//        remove.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("@", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("@", "onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("@", "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("@", "onDestroy");
+        realm.close();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d("@", "onDetach");
+        super.onDetach();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d("@", "onRestoreInstanceState");
+        if(savedInstanceState!=null) {
+            edtName.setText(savedInstanceState.getString("edtName"));
+            edtAge.setText(savedInstanceState.getString("edtAge"));
+            edtMobile.setText(savedInstanceState.getString("edtMobile"));
+            edtEmail.setText(savedInstanceState.getString("edtEmail"));
+        }
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -94,68 +184,32 @@ public class AddDataActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("@", "onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("@", "onResume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("@", "onPause");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("@", "onStop");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("@", "onRestart");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("@", "onDestroy");
-        realm.close();
-    }
 
     private void intilization() {
 
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.bloodgroup));
+        arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.bloodgroup));
 
-        searchView = (SearchView) findViewById(R.id.searchView);
-        edtName = (EditText) findViewById(R.id.edtName);
-        edtAge = (EditText) findViewById(R.id.edtAge);
-        edtMobile = (EditText) findViewById(R.id.edtMobile);
-        edtEmail = (EditText) findViewById(R.id.edtEmail);
-        edtDOB = (EditText) findViewById(R.id.edtDOB);
-        rdbActive = (RadioButton) findViewById(R.id.rdbActive);
-        rdbInActive = (RadioButton) findViewById(R.id.rdbInActive);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
-        btnUpdate = (Button) findViewById(R.id.btnUpdate);
-        btnView = (Button) findViewById(R.id.btnView);
-        spBloodGroup = (Spinner) findViewById(R.id.spBloodGroup);
-        ckbReading = (CheckBox) findViewById(R.id.ckbReading);
-        ckbWriting = (CheckBox) findViewById(R.id.ckbWriting);
-        ckbDrawing = (CheckBox) findViewById(R.id.ckbDrawing);
+        searchView = (SearchView) view.findViewById(R.id.searchView);
+        edtName = (EditText) view.findViewById(R.id.edtName);
+        edtAge = (EditText) view.findViewById(R.id.edtAge);
+        edtMobile = (EditText) view.findViewById(R.id.edtMobile);
+        edtEmail = (EditText) view.findViewById(R.id.edtEmail);
+        edtDOB = (EditText) view.findViewById(R.id.edtDOB);
+        rdbActive = (RadioButton) view.findViewById(R.id.rdbActive);
+        rdbInActive = (RadioButton) view.findViewById(R.id.rdbInActive);
+        btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
+        btnUpdate = (Button) view.findViewById(R.id.btnUpdate);
+        btnView = (Button) view.findViewById(R.id.btnView);
+        spBloodGroup = (Spinner) view.findViewById(R.id.spBloodGroup);
+        ckbReading = (CheckBox) view.findViewById(R.id.ckbReading);
+        ckbWriting = (CheckBox) view.findViewById(R.id.ckbWriting);
+        ckbDrawing = (CheckBox) view.findViewById(R.id.ckbDrawing);
         ckbReading.setOnClickListener(onCheckboxClicked);
         ckbWriting.setOnClickListener(onCheckboxClicked);
         ckbDrawing.setOnClickListener(onCheckboxClicked);
@@ -170,9 +224,9 @@ public class AddDataActivity extends AppCompatActivity {
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
+                Intent intent = new Intent(getActivity(), ViewDataActivity.class);
                 startActivity(intent);
-                finish();
+                getActivity().finish();
             }
         });
 
@@ -187,7 +241,7 @@ public class AddDataActivity extends AppCompatActivity {
 
     private void setDateTimeField() {
         Calendar newCalendar = Calendar.getInstance();
-        DatePickerDialog fromDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog fromDatePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
@@ -255,7 +309,7 @@ public class AddDataActivity extends AppCompatActivity {
                 return;
             }
             if (spBloodGroup.getSelectedItem().toString().equalsIgnoreCase("Select")) {
-                Toast.makeText(getApplicationContext(), "Select BloodGroup", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Select BloodGroup", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -300,7 +354,7 @@ public class AddDataActivity extends AppCompatActivity {
 
             /*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
             startActivity(intent);*/
-            finish();
+            getActivity().finish();
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -348,4 +402,6 @@ public class AddDataActivity extends AppCompatActivity {
             rdbInActive.setChecked(true);
         }
     }
+
+
 }

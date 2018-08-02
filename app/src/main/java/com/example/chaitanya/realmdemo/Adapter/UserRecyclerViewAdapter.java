@@ -42,10 +42,17 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo, 
     private OrderedRealmCollection<UserInfo> adapterData;
 
 
+   /* public interface OnCallFragment{
+        public void onClickAddButton();
+    }
+
+    public OnCallFragment onCallFragment;*/
+
 
     public UserRecyclerViewAdapter(@Nullable OrderedRealmCollection<UserInfo> data, Activity activity) {
         super(data, true, true);
         this.objContext = activity;
+//        this.onCallFragment = (OnCallFragment) objContext;
         setHasStableIds(true);
     }
 
@@ -158,10 +165,11 @@ public class UserRecyclerViewAdapter extends RealmRecyclerViewAdapter<UserInfo, 
     }
 
     private void addNew() {
-        Intent intent = new Intent(objContext, AddDataActivity.class);
-        intent.putExtra("name", "");
-        objContext.startActivity(intent);
+//        Intent intent = new Intent(objContext, AddDataActivity.class);
+//        intent.putExtra("name", "");
+//        objContext.startActivity(intent);
 //        objContext.finish();
+//        onCallFragment.onClickAddButton();
     }
 
     private void update(final String name) {
