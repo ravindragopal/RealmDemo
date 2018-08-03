@@ -4,8 +4,10 @@ package com.example.chaitanya.realmdemo.Fragment;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,6 +26,7 @@ import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
 import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
+import com.example.chaitanya.realmdemo.JobScheduler.ScheduleJob;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 
@@ -255,6 +258,7 @@ public class ViewDataFragment extends Fragment {
         });
 
         imgAdd.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 /*Intent intent = new Intent(getActivity(), AddDataActivity.class);
@@ -267,7 +271,9 @@ public class ViewDataFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();*/
 
-                onCallFragment.onClickAddButton();
+                ScheduleJob.scheduleJob(getActivity());
+
+//                onCallFragment.onClickAddButton();
             }
         });
     }

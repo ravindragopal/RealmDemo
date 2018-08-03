@@ -273,7 +273,7 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         Fragment fragmentAdd = new AddDataFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.framLayout, fragmentAdd);
-//        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }
