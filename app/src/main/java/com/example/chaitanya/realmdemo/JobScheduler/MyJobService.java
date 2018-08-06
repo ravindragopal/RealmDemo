@@ -15,9 +15,15 @@ import android.util.Log;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MyJobService extends JobService {
 
+    TestTask testTask;
+
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d("@@","onStartJob");
+
+        testTask = new TestTask();
+        testTask.execute();
+
         return false;
     }
 
@@ -26,6 +32,5 @@ public class MyJobService extends JobService {
         Log.d("@@","onStopJob");
         return false;
     }
-
 
 }

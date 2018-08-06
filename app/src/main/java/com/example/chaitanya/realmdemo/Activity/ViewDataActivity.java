@@ -1,6 +1,8 @@
 package com.example.chaitanya.realmdemo.Activity;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +21,7 @@ import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
 import com.example.chaitanya.realmdemo.Fragment.AddDataFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
+import com.example.chaitanya.realmdemo.JobScheduler.ScheduleJob;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Thread.Add;
@@ -62,6 +65,7 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
 
     FragmentTransaction fragmentTransaction;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +79,8 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
        /* userInfos = realm.where(UserInfo.class).findAllAsync();
         userInfos.addChangeListener(listener);
         showData();*/
+
+        ScheduleJob.scheduleJob(getApplicationContext());
 
         Fragment fragmentView = new ViewDataFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();

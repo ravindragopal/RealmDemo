@@ -14,7 +14,7 @@ import android.support.annotation.RequiresApi;
  */
 public class ScheduleJob {
 
-    public static final int MY_BACKGROUND_JOB = 0;
+    public static final int MY_BACKGROUND_JOB = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context) {
@@ -25,6 +25,7 @@ public class ScheduleJob {
                 new ComponentName(context, MyJobService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                 .setRequiresCharging(true)
+                .setMinimumLatency(5000)
                 .build();
         js.schedule(job);
     }

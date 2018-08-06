@@ -271,9 +271,9 @@ public class ViewDataFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();*/
 
-                ScheduleJob.scheduleJob(getActivity());
+//                ScheduleJob.scheduleJob(getActivity());
 
-//                onCallFragment.onClickAddButton();
+                onCallFragment.onClickAddButton();
             }
         });
     }
