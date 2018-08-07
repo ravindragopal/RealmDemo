@@ -274,6 +274,7 @@ public class ViewDataFragment extends Fragment {
 //                ScheduleJob.scheduleJob(getActivity());
 
                 onCallFragment.onClickAddButton();
+
             }
         });
     }

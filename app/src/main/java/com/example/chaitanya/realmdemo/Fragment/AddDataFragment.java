@@ -2,6 +2,7 @@ package com.example.chaitanya.realmdemo.Fragment;
 
 
 import android.app.DatePickerDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -159,7 +160,7 @@ public class AddDataFragment extends Fragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         Log.d("@", "onRestoreInstanceState");
-        if(savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             edtName.setText(savedInstanceState.getString("edtName"));
             edtAge.setText(savedInstanceState.getString("edtAge"));
             edtMobile.setText(savedInstanceState.getString("edtMobile"));
@@ -218,6 +219,8 @@ public class AddDataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 insertData();
+               /* FragmentManager fragmentManager = getActivity().getFragmentManager();
+                fragmentManager.popBackStack();*/
             }
         });
 
@@ -236,8 +239,8 @@ public class AddDataFragment extends Fragment {
                 setDateTimeField();
             }
         });
-
     }
+
 
     private void setDateTimeField() {
         Calendar newCalendar = Calendar.getInstance();

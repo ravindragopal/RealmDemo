@@ -1,9 +1,9 @@
 package com.example.chaitanya.realmdemo.Activity;
 
-import android.content.Intent;
+import android.arch.lifecycle.Observer;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,22 +19,24 @@ import android.widget.SearchView;
 
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
-import com.example.chaitanya.realmdemo.Fragment.AddDataFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
-import com.example.chaitanya.realmdemo.JobScheduler.ScheduleJob;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
-import com.example.chaitanya.realmdemo.Thread.Add;
-import com.example.chaitanya.realmdemo.Thread.Remove;
+import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
+import com.example.chaitanya.realmdemo.WorkManager.TestWorker;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import androidx.work.Constraints;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkStatus;
 import io.realm.Case;
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import io.realm.RealmObjectChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -49,6 +51,7 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
     SearchView searchView;
     ImageView imgView, imgAdd;
     public RealmResults<UserInfo> userInfos;
+
 /*
     RealmChangeListener<RealmResults<UserInfo>> listener = new RealmChangeListener<RealmResults<UserInfo>>() {
         @Override
@@ -63,6 +66,9 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
     int contents;
     int nextId;
 
+    OneTimeWorkRequest oneTimeWorkRequest;
+    PeriodicWorkRequest periodicWorkRequest;
+
     FragmentTransaction fragmentTransaction;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -74,18 +80,18 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         Log.d("V@", "onCreate");
 //        realm = Realm.getDefaultInstance();
 
-//        initilization();
+        initilization();
 
        /* userInfos = realm.where(UserInfo.class).findAllAsync();
         userInfos.addChangeListener(listener);
         showData();*/
 
-        ScheduleJob.scheduleJob(getApplicationContext());
+        /*ScheduleJob.scheduleJob(getApplicationContext());
 
         Fragment fragmentView = new ViewDataFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.framLayout, fragmentView);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     @Override
@@ -180,8 +186,7 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         imgAdd = (ImageView) findViewById(R.id.imgAdd);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        LinearLayoutManager llm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(llm);
 
        /* swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -222,16 +227,18 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shortData();
+                /*shortData();*/
+                workStatus();
             }
         });
 
         imgAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
+                OneTimeWorkRequest();
+                /*Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
                 intent.putExtra("name", "");
-                startActivity(intent);
+                startActivity(intent);*/
             }
         });
     }
@@ -274,12 +281,101 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
 
     @Override
     public void onClickAddButton() {
-
+/*
 //        fragmentTransaction.remove(fragment);
+//        Fragment fragmentAdd1 = new ViewDataFragment();
         Fragment fragmentAdd = new AddDataFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        *//*fragmentTransaction.detach(fragmentAdd1);
+        fragmentTransaction.attach(fragmentAdd1);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();*//*
         fragmentTransaction.replace(R.id.framLayout, fragmentAdd);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
+
+        *//*fragmentTransaction.detach(fragmentAdd1);
+        fragmentTransaction.commitNow();
+   fragmentTransaction.attach(fragmentAdd);
+        fragmentTransaction.commitNow();*/
+
+
+//        OneTimeWorkRequest();
+//        periodicWorlRequest();
+    }
+
+    private void OneTimeWorkRequest() {
+
+        Log.d("@", "WorkRequest");
+        // Create a Constraints that defines when the task should run
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                // Many other constraints are available, see the
+                // Constraints.Builder reference
+                .build();
+
+        oneTimeWorkRequest = new OneTimeWorkRequest.Builder(TestWorker.class)
+                .setConstraints(myConstraints)
+                .build();
+        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
+    }
+
+    private void periodicWorlRequest() {
+
+        PeriodicWorkRequest.Builder periodicWorkBuilder =
+                new PeriodicWorkRequest.Builder(TestWorker.class, 1, TimeUnit.HOURS);
+
+        // Create a Constraints that defines when the task should run
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                // Many other constraints are available, see the
+                // Constraints.Builder reference
+                .build();
+
+        // Create the actual work object:
+        periodicWorkRequest = periodicWorkBuilder
+                .setConstraints(myConstraints)
+                .build();
+        // Then enqueue the recurring task:
+        WorkManager.getInstance().enqueue(periodicWorkRequest);
+    }
+
+    private void chainedTask() {
+
+        WorkManager.getInstance()
+//                .beginWith(workA)
+                // Note: WorkManager.beginWith() returns a
+                // WorkContinuation object; the following calls are
+                // to WorkContinuation methods
+//                .then(workB)    // FYI, then() returns a new WorkContinuation instance
+//                .then(workC)
+                .enqueue();
+    }
+
+    private void workStatus() {
+
+        WorkManager.getInstance().getStatusById(oneTimeWorkRequest.getId())
+                .observe(ViewDataActivity.this, new Observer<WorkStatus>() {
+                    @Override
+                    public void onChanged(@Nullable WorkStatus status) {
+                        if (status != null && status.getState().isFinished()) {
+                            String response = status.getOutputData().getString("res");
+                            Log.d("@res", "" + response);
+                        }
+                    }
+                });
+    }
+
+    private void cancelTask() {
+        UUID compressionWorkId = oneTimeWorkRequest.getId();
+        WorkManager.getInstance().cancelWorkById(compressionWorkId);
+    }
+
+
+    public void getResponse(List<RetroPhoto> retroPhotoList) {
+        UserInfoAdapter userInfoAdapter = new UserInfoAdapter(this, retroPhotoList);
+        recyclerView.setAdapter(userInfoAdapter);
+        userInfoAdapter.notifyDataSetChanged();
     }
 }

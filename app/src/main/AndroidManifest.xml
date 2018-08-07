@@ -3,8 +3,10 @@
     package="com.example.chaitanya.realmdemo">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Activity.MyApplication"
         android:allowBackup="true"
@@ -30,7 +32,8 @@
             android:name=".JobScheduler.MyJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name=".ConstraintLayout.ConstraintLayoutActivity"></activity>
+        <activity android:name=".ConstraintLayout.ConstraintLayoutActivity" />
+        <activity android:name=".RxJava.ExampleActivity"></activity>
     </application>
 
 </manifest>

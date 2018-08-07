@@ -1,6 +1,7 @@
 package com.example.chaitanya.realmdemo.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,10 +15,13 @@ import android.widget.TextView;
 
 
 import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
+import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
+import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -28,11 +32,20 @@ import io.realm.RealmResults;
 public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder> {
 
     Activity objContext;
+    Context context;
+
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
+
+    private List<RetroPhoto> dataList;
 
     public UserInfoAdapter(Activity activity, RealmResults<UserInfo> userInfos) {
         this.userInfoArrayList.addAll(userInfos);
         this.objContext = activity;
+    }
+
+    public UserInfoAdapter(Context context, List<RetroPhoto> res) {
+        this.context = context;
+        this.dataList = dataList;
     }
 
     @Override
@@ -56,12 +69,12 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
         holder.imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("id@@",""+userInfo.getId());
+                Log.d("id@@", "" + userInfo.getId());
                 showDialog(holder, holder.getAdapterPosition());
             }
         });
 
-        Log.d("id@@",""+userInfo.getId());
+        Log.d("id@@", "" + userInfo.getId());
 
     }
 
