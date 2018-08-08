@@ -14,6 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
 import com.example.chaitanya.realmdemo.Activity.ViewDataActivity;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
@@ -32,7 +33,6 @@ import io.realm.RealmResults;
 public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder> {
 
     Activity objContext;
-    Context context;
 
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 
@@ -43,21 +43,33 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
         this.objContext = activity;
     }
 
-    public UserInfoAdapter(Context context, List<RetroPhoto> res) {
-        this.context = context;
-        this.dataList = dataList;
+    public UserInfoAdapter(Activity context, List<RetroPhoto> res) {
+        this.objContext = context;
+        this.dataList = res;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.retro_photo, parent, false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataList.size();
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        final UserInfo userInfo = userInfoArrayList.get(position);
+        String url = dataList.get(position).getUrl();
+//        Log.d("@url",url);
+
+        Glide.with(objContext)
+                .load(url)
+                .into(holder.imgView);
+
+        /*final UserInfo userInfo = userInfoArrayList.get(position);
 
         holder.txtName.setText("" + userInfo.getName());
         holder.txtAge.setText("Age : " + userInfo.getAge());
@@ -74,7 +86,22 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
             }
         });
 
-        Log.d("id@@", "" + userInfo.getId());
+        Log.d("id@@", "" + userInfo.getId());*/
+
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        View viewItem;
+        TextView txtName, txtAge, txtMobile, txtStatus;
+        ImageView imgView;
+
+        public ViewHolder(View view) {
+            super(view);
+            viewItem = view;
+            imgView = (ImageView) view.findViewById(R.id.imgView);
+        }
 
     }
 
@@ -122,29 +149,6 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHo
                 notifyDataSetChanged();
             }
         });
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return userInfoArrayList.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        View viewItem;
-        private TextView txtName, txtAge, txtMobile, txtStatus;
-        private ImageView imgView;
-
-        public ViewHolder(View view) {
-            super(view);
-            viewItem = view;
-            txtName = (TextView) view.findViewById(R.id.txtName);
-            txtAge = (TextView) view.findViewById(R.id.txtAge);
-            txtMobile = (TextView) view.findViewById(R.id.txtMobile);
-            txtStatus = (TextView) view.findViewById(R.id.txtStatus);
-            imgView = (ImageView) view.findViewById(R.id.imgView);
-        }
 
     }
 }

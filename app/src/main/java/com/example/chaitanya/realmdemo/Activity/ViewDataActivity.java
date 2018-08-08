@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +20,12 @@ import android.widget.SearchView;
 
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
+import com.example.chaitanya.realmdemo.Fragment.AddDataFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
-import com.example.chaitanya.realmdemo.WorkManager.TestWorker;
+import com.example.chaitanya.realmdemo.WorkManager.TestWorkerA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -228,14 +230,12 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
             @Override
             public void onClick(View v) {
                 /*shortData();*/
-                workStatus();
             }
         });
 
         imgAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OneTimeWorkRequest();
                 /*Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
                 intent.putExtra("name", "");
                 startActivity(intent);*/
@@ -281,101 +281,25 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
 
     @Override
     public void onClickAddButton() {
-/*
+
 //        fragmentTransaction.remove(fragment);
 //        Fragment fragmentAdd1 = new ViewDataFragment();
         Fragment fragmentAdd = new AddDataFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        *//*fragmentTransaction.detach(fragmentAdd1);
-        fragmentTransaction.attach(fragmentAdd1);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*//*
+        //*fragmentTransaction.detach(fragmentAdd1);
+//        fragmentTransaction.attach(fragmentAdd1);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();*//*
         fragmentTransaction.replace(R.id.framLayout, fragmentAdd);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
 
-        *//*fragmentTransaction.detach(fragmentAdd1);
+        /*fragmentTransaction.detach(fragmentAdd1);
         fragmentTransaction.commitNow();
    fragmentTransaction.attach(fragmentAdd);
         fragmentTransaction.commitNow();*/
 
-
-//        OneTimeWorkRequest();
-//        periodicWorlRequest();
     }
 
-    private void OneTimeWorkRequest() {
-
-        Log.d("@", "WorkRequest");
-        // Create a Constraints that defines when the task should run
-        Constraints myConstraints = new Constraints.Builder()
-                .setRequiresCharging(true)
-                // Many other constraints are available, see the
-                // Constraints.Builder reference
-                .build();
-
-        oneTimeWorkRequest = new OneTimeWorkRequest.Builder(TestWorker.class)
-                .setConstraints(myConstraints)
-                .build();
-        WorkManager.getInstance().enqueue(oneTimeWorkRequest);
-    }
-
-    private void periodicWorlRequest() {
-
-        PeriodicWorkRequest.Builder periodicWorkBuilder =
-                new PeriodicWorkRequest.Builder(TestWorker.class, 1, TimeUnit.HOURS);
-
-        // Create a Constraints that defines when the task should run
-        Constraints myConstraints = new Constraints.Builder()
-                .setRequiresCharging(true)
-                // Many other constraints are available, see the
-                // Constraints.Builder reference
-                .build();
-
-        // Create the actual work object:
-        periodicWorkRequest = periodicWorkBuilder
-                .setConstraints(myConstraints)
-                .build();
-        // Then enqueue the recurring task:
-        WorkManager.getInstance().enqueue(periodicWorkRequest);
-    }
-
-    private void chainedTask() {
-
-        WorkManager.getInstance()
-//                .beginWith(workA)
-                // Note: WorkManager.beginWith() returns a
-                // WorkContinuation object; the following calls are
-                // to WorkContinuation methods
-//                .then(workB)    // FYI, then() returns a new WorkContinuation instance
-//                .then(workC)
-                .enqueue();
-    }
-
-    private void workStatus() {
-
-        WorkManager.getInstance().getStatusById(oneTimeWorkRequest.getId())
-                .observe(ViewDataActivity.this, new Observer<WorkStatus>() {
-                    @Override
-                    public void onChanged(@Nullable WorkStatus status) {
-                        if (status != null && status.getState().isFinished()) {
-                            String response = status.getOutputData().getString("res");
-                            Log.d("@res", "" + response);
-                        }
-                    }
-                });
-    }
-
-    private void cancelTask() {
-        UUID compressionWorkId = oneTimeWorkRequest.getId();
-        WorkManager.getInstance().cancelWorkById(compressionWorkId);
-    }
-
-
-    public void getResponse(List<RetroPhoto> retroPhotoList) {
-        UserInfoAdapter userInfoAdapter = new UserInfoAdapter(this, retroPhotoList);
-        recyclerView.setAdapter(userInfoAdapter);
-        userInfoAdapter.notifyDataSetChanged();
-    }
 }
