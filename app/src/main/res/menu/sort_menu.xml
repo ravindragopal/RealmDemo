@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Sort by.." />
+
+    <item
+        android:id="@+id/age"
+        android:title="Age" />
+
+    <item
+        android:id="@+id/dob"
+        android:title="Date of Birth" />
+
+</menu>
