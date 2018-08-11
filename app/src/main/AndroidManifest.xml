@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".RxJava.RxTest"
+            android:name=".Activity.ViewDataActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name=".ConstraintLayout.ConstraintLayoutActivity" />
-        <activity android:name=".Activity.ViewDataActivity" />
+        <activity android:name=".RxJava.RxTest" />
         <activity android:name=".WorkManager.WorkManagerActivity"></activity>
     </application>
 

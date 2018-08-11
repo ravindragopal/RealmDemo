@@ -1,6 +1,7 @@
 package com.example.chaitanya.realmdemo.Activity;
 
 import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -25,6 +26,7 @@ import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
+import com.example.chaitanya.realmdemo.Thread.Add;
 import com.example.chaitanya.realmdemo.WorkManager.TestWorkerA;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import androidx.work.WorkManager;
 import androidx.work.WorkStatus;
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -54,7 +57,6 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
     ImageView imgView, imgAdd;
     public RealmResults<UserInfo> userInfos;
 
-/*
     RealmChangeListener<RealmResults<UserInfo>> listener = new RealmChangeListener<RealmResults<UserInfo>>() {
         @Override
         public void onChange(RealmResults<UserInfo> UserInfo) {
@@ -62,7 +64,7 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
                 userRecyclerViewAdapter.notifyDataSetChanged();
             }
         }
-    };*/
+    };
 
 
     int contents;
@@ -80,13 +82,13 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         setContentView(R.layout.activity_view_data);
 
         Log.d("V@", "onCreate");
-//        realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
 
         initilization();
 
-       /* userInfos = realm.where(UserInfo.class).findAllAsync();
+        userInfos = realm.where(UserInfo.class).findAllAsync();
         userInfos.addChangeListener(listener);
-        showData();*/
+        showData();
 
         /*ScheduleJob.scheduleJob(getApplicationContext());
 
@@ -236,9 +238,9 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         imgAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
+                Intent intent = new Intent(ViewDataActivity.this, AddDataActivity.class);
                 intent.putExtra("name", "");
-                startActivity(intent);*/
+                startActivity(intent);
             }
         });
     }
