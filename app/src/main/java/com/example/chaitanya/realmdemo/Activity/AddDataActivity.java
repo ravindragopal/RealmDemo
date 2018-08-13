@@ -26,6 +26,7 @@ import com.example.chaitanya.realmdemo.Model.UserInfo;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -46,6 +47,26 @@ public class AddDataActivity extends AppCompatActivity {
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     Realm realm;
+
+    /**
+     * Email validation pattern.
+     */
+    public static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+    );
+
+    public static final Pattern MobilePattern = Pattern.compile("[0-9]{10}");
+
+    public static boolean isNumeric(String str)
+    {
+        return str.matches("-?\\d+(.\\d+)?");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,11 +331,13 @@ public class AddDataActivity extends AppCompatActivity {
 
     }
 
-
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    public static boolean isValidEmail(CharSequence email) {
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 
+    public static boolean isValidMobile(CharSequence mobile) {
+        return mobile != null && MobilePattern.matcher(mobile).matches();
+    }
 
     private void showData(final String name) {
         RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
