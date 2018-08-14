@@ -21,6 +21,7 @@ import android.widget.SearchView;
 
 import com.example.chaitanya.realmdemo.Adapter.UserInfoAdapter;
 import com.example.chaitanya.realmdemo.Adapter.UserRecyclerViewAdapter;
+import com.example.chaitanya.realmdemo.EventBus.RxBus;
 import com.example.chaitanya.realmdemo.Fragment.AddDataFragment;
 import com.example.chaitanya.realmdemo.Fragment.ViewDataFragment;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
@@ -39,6 +40,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkStatus;
+import io.reactivex.functions.Consumer;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -96,6 +98,16 @@ public class ViewDataActivity extends AppCompatActivity implements ViewDataFragm
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.framLayout, fragmentView);
         fragmentTransaction.commit();*/
+
+        RxBus.getRxBusInstant()
+                .toObservable()
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object object) throws Exception {
+                        Log.d("@@", "Event Type One Received " + object);
+                    }
+                });
+
     }
 
     @Override

@@ -1,13 +1,12 @@
 package com.example.chaitanya.realmdemo.Activity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +18,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.chaitanya.realmdemo.EventBus.RxBus;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
@@ -63,8 +63,7 @@ public class AddDataActivity extends AppCompatActivity {
 
     public static final Pattern MobilePattern = Pattern.compile("[0-9]{10}");
 
-    public static boolean isNumeric(String str)
-    {
+    public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(.\\d+)?");
     }
 
@@ -191,6 +190,11 @@ public class AddDataActivity extends AppCompatActivity {
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                RxBus.getRxBusInstant()
+                        .send("Test Data");
+
                 Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
                 startActivity(intent);
                 finish();
@@ -219,7 +223,6 @@ public class AddDataActivity extends AppCompatActivity {
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
         fromDatePickerDialog.show();
     }
-
 
     View.OnClickListener onCheckboxClicked = new View.OnClickListener() {
         @Override
@@ -321,6 +324,7 @@ public class AddDataActivity extends AppCompatActivity {
 
             /*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
             startActivity(intent);*/
+
             finish();
 
         } catch (NumberFormatException e) {
@@ -371,4 +375,5 @@ public class AddDataActivity extends AppCompatActivity {
             rdbInActive.setChecked(true);
         }
     }
+
 }

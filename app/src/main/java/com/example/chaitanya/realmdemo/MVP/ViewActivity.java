@@ -2,6 +2,8 @@ package com.example.chaitanya.realmdemo.MVP;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.chaitanya.realmdemo.R;
 
-public class ViewActivity extends AppCompatActivity implements Test.name {
+public class ViewActivity extends AppCompatActivity implements Presenter.View {
 
     TextView textView;
     EditText editText;
@@ -29,6 +31,23 @@ public class ViewActivity extends AppCompatActivity implements Test.name {
         button = (Button) findViewById(R.id.button);
 
         presenter = new Presenter(ViewActivity.this);
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.updateName(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
