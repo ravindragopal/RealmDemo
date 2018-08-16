@@ -1,9 +1,14 @@
 package com.example.chaitanya.realmdemo.Activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -22,15 +28,21 @@ import com.example.chaitanya.realmdemo.EventBus.RxBus;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
+import com.example.chaitanya.realmdemo.Retrofit.GetDataService;
+import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
+import com.example.chaitanya.realmdemo.Retrofit.RetrofitClientInstance;
+import com.example.chaitanya.realmdemo.WorkManager.WorkManagerActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import retrofit2.Call;
 
 public class AddDataActivity extends AppCompatActivity {
 
@@ -40,6 +52,7 @@ public class AddDataActivity extends AppCompatActivity {
     Spinner spBloodGroup;
     CheckBox ckbReading, ckbWriting, ckbDrawing;
     SearchView searchView;
+    ImageButton imgbtnDate;
 
     HobbiesModel hobbies = new HobbiesModel();
     RealmList<HobbiesModel> hobbiesModelRealmList = new RealmList<>();
@@ -47,6 +60,11 @@ public class AddDataActivity extends AppCompatActivity {
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     Realm realm;
+
+    GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+
+    Call<List<RetroPhoto>> call;
+
 
     /**
      * Email validation pattern.
@@ -180,6 +198,15 @@ public class AddDataActivity extends AppCompatActivity {
         ckbWriting.setOnClickListener(onCheckboxClicked);
         ckbDrawing.setOnClickListener(onCheckboxClicked);
 
+        imgbtnDate = (ImageButton)findViewById(R.id.imgbtnDate);
+
+        imgbtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDateTimeField();
+            }
+        });
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,21 +219,23 @@ public class AddDataActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                RxBus.getRxBusInstant()
+                /*RxBus.getRxBusInstant()
                         .send("Test Data");
 
                 Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
                 startActivity(intent);
-                finish();
+                finish();*/
+
+                new LoadData().execute();
             }
         });
 
-        edtDOB.setOnClickListener(new View.OnClickListener() {
+        /*edtDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDateTimeField();
             }
-        });
+        });*/
 
     }
 
@@ -283,7 +312,7 @@ public class AddDataActivity extends AppCompatActivity {
                 return;
             }
 
-            Number currentIdNum = realm.where(UserInfo.class).max("id");
+          /*  Number currentIdNum = realm.where(UserInfo.class).max("id");
             int nextId;
             if (currentIdNum == null) {
                 nextId = 1;
@@ -322,16 +351,16 @@ public class AddDataActivity extends AppCompatActivity {
             ckbDrawing.setChecked(false);
             rdbActive.setChecked(true);
 
-            /*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
-            startActivity(intent);*/
+            *//*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
+            startActivity(intent);*//*
 
-            finish();
+            finish();*/
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } /*catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
@@ -375,5 +404,60 @@ public class AddDataActivity extends AppCompatActivity {
             rdbInActive.setChecked(true);
         }
     }
+
+
+    private class LoadData extends AsyncTask<String,String,String>{
+
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... strings) {
+            call = service.getAllPhotos();
+            return null;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(AddDataActivity.this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.dismiss();
+            alertDialog(call.toString().substring(0,50));
+            Toast.makeText(getApplicationContext(),""+call.toString().substring(0,50),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void alertDialog(String msg){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Test Dialog");
+        builder.setMessage("Test");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
 
 }
