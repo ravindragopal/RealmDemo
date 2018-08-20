@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +34,7 @@ import com.example.chaitanya.realmdemo.Model.UserInfo;
 import com.example.chaitanya.realmdemo.Retrofit.GetDataService;
 import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
 import com.example.chaitanya.realmdemo.Retrofit.RetrofitClientInstance;
+import com.example.chaitanya.realmdemo.Utils.EspressoIdlingResource;
 import com.example.chaitanya.realmdemo.WorkManager.WorkManagerActivity;
 
 import java.text.ParseException;
@@ -64,7 +68,6 @@ public class AddDataActivity extends AppCompatActivity {
     GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
     Call<List<RetroPhoto>> call;
-
 
     /**
      * Email validation pattern.
@@ -420,6 +423,7 @@ public class AddDataActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            EspressoIdlingResource.increment();
             progressDialog = new ProgressDialog(AddDataActivity.this);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
@@ -428,6 +432,7 @@ public class AddDataActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            EspressoIdlingResource.decrement();
             progressDialog.dismiss();
             alertDialog(call.toString().substring(0,50));
             Toast.makeText(getApplicationContext(),""+call.toString().substring(0,50),Toast.LENGTH_LONG).show();
@@ -458,6 +463,5 @@ public class AddDataActivity extends AppCompatActivity {
         dialog.show();
 
     }
-
 
 }

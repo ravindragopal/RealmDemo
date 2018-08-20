@@ -1,9 +1,11 @@
 package com.example.chaitanya.realmdemo;
 
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
@@ -11,10 +13,14 @@ import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
 import com.example.chaitanya.realmdemo.Activity.AddDataActivity;
+import com.example.chaitanya.realmdemo.Utils.EspressoIdlingResource;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 
 import java.util.Calendar;
@@ -53,8 +59,25 @@ public class AddDataActivityTest {
     @Rule
     public ActivityTestRule<AddDataActivity> activityTestRule = new ActivityTestRule<>(AddDataActivity.class);
 
+    @Before
+    public void registerIdlingResource() {
+        Espresso.registerIdlingResources(EspressoIdlingResource.getIdlingResource());
+    }
+
+    /**
+     * Unregister your Idling Resource so it can be garbage collected and does not leak any memory.
+     */
+    @After
+    public void unregisterIdlingResource() {
+        Espresso.unregisterIdlingResources(EspressoIdlingResource.getIdlingResource());
+    }
+
     @Test
     public void formValidation() {
+
+        Espresso.onView((withId(R.id.btnView))).perform(click());
+        Espresso.onView(withText("Test")).inRoot(isDialog()).check(matches(isDisplayed()));
+        Espresso.pressBack();
 
         Espresso.onView((withId(R.id.edtName))).perform(typeText(NAME), closeSoftKeyboard());
         Espresso.onView((withId(R.id.edtAge))).perform(typeText(AGE), closeSoftKeyboard());
@@ -84,9 +107,8 @@ public class AddDataActivityTest {
 
         Espresso.onView((withId(R.id.btnSubmit))).perform(click());
 
-        Espresso.onView((withId(R.id.btnView))).perform(click());
-
-        Espresso.onView(withText("Test")).inRoot(isDialog()) .check(matches(isDisplayed()));
+      /*  Espresso.onView((withId(R.id.btnView))).perform(click());
+        Espresso.onView(withText("Test")).inRoot(isDialog()).check(matches(isDisplayed()));*/
 
     }
 
