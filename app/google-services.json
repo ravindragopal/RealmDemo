@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "291113693012",
+    "firebase_url": "https://realmdemo-1fc02.firebaseio.com",
+    "project_id": "realmdemo-1fc02",
+    "storage_bucket": "realmdemo-1fc02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291113693012:android:62320c2930147718",
+        "android_client_info": {
+          "package_name": "com.example.chaitanya.realmdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291113693012-j4k9cqerb8jrt7c9a7hh6s8b0eaaua8n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chaitanya.realmdemo",
+            "certificate_hash": "61ae2e679588dd67cb1df31b33c3dd99badbf45f"
+          }
+        },
+        {
+          "client_id": "291113693012-56p8vcuqcn45g62qa1g6qr599c1gfa24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRPw8va2z6A0rdnDbWapvBDGp39FxS5P8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "291113693012-56p8vcuqcn45g62qa1g6qr599c1gfa24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
