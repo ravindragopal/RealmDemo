@@ -1,35 +1,52 @@
 package com.example.chaitanya.realmdemo.Activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.chaitanya.realmdemo.EventBus.RxBus;
 import com.example.chaitanya.realmdemo.Model.HobbiesModel;
 import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Model.UserInfo;
+import com.example.chaitanya.realmdemo.Retrofit.GetDataService;
+import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
+import com.example.chaitanya.realmdemo.Retrofit.RetrofitClientInstance;
+import com.example.chaitanya.realmdemo.Utils.EspressoIdlingResource;
+import com.example.chaitanya.realmdemo.WorkManager.WorkManagerActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import retrofit2.Call;
 
 public class AddDataActivity extends AppCompatActivity {
 
@@ -39,6 +56,7 @@ public class AddDataActivity extends AppCompatActivity {
     Spinner spBloodGroup;
     CheckBox ckbReading, ckbWriting, ckbDrawing;
     SearchView searchView;
+    ImageButton imgbtnDate;
 
     HobbiesModel hobbies = new HobbiesModel();
     RealmList<HobbiesModel> hobbiesModelRealmList = new RealmList<>();
@@ -46,6 +64,29 @@ public class AddDataActivity extends AppCompatActivity {
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     Realm realm;
+
+    GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+
+    Call<List<RetroPhoto>> call;
+
+    /**
+     * Email validation pattern.
+     */
+    public static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+    );
+
+    public static final Pattern MobilePattern = Pattern.compile("[0-9]{10}");
+
+    public static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(.\\d+)?");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +201,15 @@ public class AddDataActivity extends AppCompatActivity {
         ckbWriting.setOnClickListener(onCheckboxClicked);
         ckbDrawing.setOnClickListener(onCheckboxClicked);
 
+        imgbtnDate = (ImageButton)findViewById(R.id.imgbtnDate);
+
+        imgbtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDateTimeField();
+            }
+        });
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,18 +220,25 @@ public class AddDataActivity extends AppCompatActivity {
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                /*RxBus.getRxBusInstant()
+                        .send("Test Data");
+
                 Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
                 startActivity(intent);
-                finish();
+                finish();*/
+
+                new LoadData().execute();
             }
         });
 
-        edtDOB.setOnClickListener(new View.OnClickListener() {
+        /*edtDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDateTimeField();
             }
-        });
+        });*/
 
     }
 
@@ -198,7 +255,6 @@ public class AddDataActivity extends AppCompatActivity {
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
         fromDatePickerDialog.show();
     }
-
 
     View.OnClickListener onCheckboxClicked = new View.OnClickListener() {
         @Override
@@ -259,7 +315,7 @@ public class AddDataActivity extends AppCompatActivity {
                 return;
             }
 
-            Number currentIdNum = realm.where(UserInfo.class).max("id");
+          /*  Number currentIdNum = realm.where(UserInfo.class).max("id");
             int nextId;
             if (currentIdNum == null) {
                 nextId = 1;
@@ -298,23 +354,26 @@ public class AddDataActivity extends AppCompatActivity {
             ckbDrawing.setChecked(false);
             rdbActive.setChecked(true);
 
-            /*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
-            startActivity(intent);*/
-            finish();
+            *//*Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
+            startActivity(intent);*//*
+
+            finish();*/
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } /*catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
-
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    public static boolean isValidEmail(CharSequence email) {
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 
+    public static boolean isValidMobile(CharSequence mobile) {
+        return mobile != null && MobilePattern.matcher(mobile).matches();
+    }
 
     private void showData(final String name) {
         RealmResults<UserInfo> userInfos = realm.where(UserInfo.class)
@@ -348,4 +407,61 @@ public class AddDataActivity extends AppCompatActivity {
             rdbInActive.setChecked(true);
         }
     }
+
+
+    private class LoadData extends AsyncTask<String,String,String>{
+
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... strings) {
+            call = service.getAllPhotos();
+            return null;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            EspressoIdlingResource.increment();
+            progressDialog = new ProgressDialog(AddDataActivity.this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            EspressoIdlingResource.decrement();
+            progressDialog.dismiss();
+            alertDialog(call.toString().substring(0,50));
+            Toast.makeText(getApplicationContext(),""+call.toString().substring(0,50),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void alertDialog(String msg){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Test Dialog");
+        builder.setMessage("Test");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
 }

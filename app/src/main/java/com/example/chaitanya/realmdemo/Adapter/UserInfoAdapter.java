@@ -22,6 +22,7 @@ import com.example.chaitanya.realmdemo.R;
 import com.example.chaitanya.realmdemo.Retrofit.RetroPhoto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;

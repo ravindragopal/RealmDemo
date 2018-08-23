@@ -15,8 +15,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+            See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
         <activity
-            android:name=".RxJava.RxTest"
+            android:name=".FCM.FCMActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,8 +45,19 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity android:name=".ConstraintLayout.ConstraintLayoutActivity" />
-        <activity android:name=".Activity.ViewDataActivity" />
-        <activity android:name=".WorkManager.WorkManagerActivity"></activity>
+        <activity android:name=".RxJava.RxTest" />
+        <activity android:name=".WorkManager.WorkManagerActivity" />
+        <activity android:name=".MVP.ViewActivity" />
+        <activity android:name=".MVP.ViewActivity"></activity>
+
+
+        <service
+            android:name=".FCM.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

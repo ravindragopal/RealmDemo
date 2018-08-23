@@ -2,6 +2,8 @@ package com.example.chaitanya.realmdemo.Activity;
 
 import android.app.Application;
 
+import com.example.chaitanya.realmdemo.EventBus.RxBus;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 

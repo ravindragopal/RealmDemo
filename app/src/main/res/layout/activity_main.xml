@@ -53,15 +53,29 @@
                 android:padding="10dp"
                 android:textColor="@android:color/black" />
 
-
-            <EditText
-                android:id="@+id/edtDOB"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Date Of Birth"
-                android:editable="false"
-                android:padding="10dp"
-                android:textColor="@android:color/black" />
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/edtDOB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Date Of Birth"
+                    android:padding="10dp"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/black" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/imgbtnDate"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
