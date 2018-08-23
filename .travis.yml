@@ -59,10 +59,6 @@ before_install:
 - ./gradlew dependencies || true
 
 
-script:
-
-- "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
-
 before_deploy:
 
 - cd app/build/outputs/apk/
