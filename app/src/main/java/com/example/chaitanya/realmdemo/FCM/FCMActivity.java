@@ -17,22 +17,29 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
 
 public class FCMActivity extends AppCompatActivity {
 
 
     String TAG = FCMActivity.class.getSimpleName();
-    Button  subscribeButton,unsubscribeButton,sendUpstreamMsg;
+    Button subscribeButton, unsubscribeButton, sendUpstreamMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fcm);
 
-        subscribeButton = (Button)findViewById(R.id.subscribeButton);
-        unsubscribeButton = (Button)findViewById(R.id.unsubscribeButton);
-        sendUpstreamMsg = (Button)findViewById(R.id.sendUpstreamMsg);
+        subscribeButton = (Button) findViewById(R.id.subscribeButton);
+        unsubscribeButton = (Button) findViewById(R.id.unsubscribeButton);
+        sendUpstreamMsg = (Button) findViewById(R.id.sendUpstreamMsg);
 
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +74,7 @@ public class FCMActivity extends AppCompatActivity {
 
     }
 
-    private void sendUpstream(){
+    private void sendUpstream() {
 
         /*FirebaseMessaging fm = FirebaseMessaging.getInstance();
         String to = "aUniqueKey"; // the notification key
@@ -83,11 +90,11 @@ public class FCMActivity extends AppCompatActivity {
         fm.send(new RemoteMessage.Builder("291113693012" + "@gcm.googleapis.com")
                 .setMessageId(Integer.toString(msgId.incrementAndGet()))
                 .addData("my_message", "Hello World")
-                .addData("my_action","SAY_HELLO")
+                .addData("my_action", "SAY_HELLO")
                 .build());
     }
 
-    private void subscribeTopic(){
+    private void subscribeTopic() {
 
         FirebaseMessaging.getInstance().subscribeToTopic("news")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -104,7 +111,7 @@ public class FCMActivity extends AppCompatActivity {
 
     }
 
-    private void unsubscribeTopic(){
+    private void unsubscribeTopic() {
 
         FirebaseMessaging.getInstance().unsubscribeFromTopic("news")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -120,4 +127,12 @@ public class FCMActivity extends AppCompatActivity {
                 });
 
     }
+
+    private void test(){
+
+        BehaviorSubject<Integer> source = BehaviorSubject.create();
+        source.subscribe();
+
+    }
+
 }
