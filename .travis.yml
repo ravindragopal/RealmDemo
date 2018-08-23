@@ -1,2 +1,25 @@
-language: java
-sudo: false
+android:
+    update_sdk: true  #Check for the updates each time you run the build.
+    components:
+        - platform-tools
+        - tools
+        - build-tools-25.0.0    #Build tool version
+        - android-25            #targate api version
+
+        # Additional components
+        - extra-google-google_play_services
+        - extra-google-m2repository
+        - extra-android-m2repository
+
+        licenses:
+            - 'android-sdk-preview-license-52d11cd2'
+            - 'android-sdk-license-.+'
+            - 'google-gdk-license-.+'
+
+
+
+
+
+
+
+
