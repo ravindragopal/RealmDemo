@@ -1,5 +1,5 @@
+language: android
 android:
-    update_sdk: true  #Check for the updates each time you run the build.
     components:
         - platform-tools
         - tools
@@ -12,7 +12,6 @@ android:
         - extra-android-m2repository
 
         licenses:
-            - 'android-sdk-preview-license-52d11cd2'
             - 'android-sdk-license-.+'
             - 'google-gdk-license-.+'
 
