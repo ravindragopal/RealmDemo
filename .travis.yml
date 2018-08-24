@@ -3,8 +3,8 @@ android:
     components:
         - platform-tools
         - tools
-        - build-tools-25.0.0    #Build tool version
-        - android-25            #targate api version
+        - build-tools-20.0.0    #Build tool version
+        - android-28            #targate api version
 
         # Additional components
         - extra-google-google_play_services
