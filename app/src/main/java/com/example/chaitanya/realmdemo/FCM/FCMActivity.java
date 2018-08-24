@@ -1,11 +1,10 @@
 package com.example.chaitanya.realmdemo.FCM;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,14 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.ReplaySubject;
 
 public class FCMActivity extends AppCompatActivity {
 
@@ -128,10 +120,7 @@ public class FCMActivity extends AppCompatActivity {
 
     }
 
-    private void test(){
-
-        BehaviorSubject<Integer> source = BehaviorSubject.create();
-        source.subscribe();
+    private void test() {
 
     }
 

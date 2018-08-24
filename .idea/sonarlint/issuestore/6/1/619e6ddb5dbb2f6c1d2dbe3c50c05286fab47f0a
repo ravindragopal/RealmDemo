@@ -1,0 +1,14 @@
+
+wsquid:S00120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(àÊ¹øÿÿÿÿ
+Osquid:UnusedPrivateMethod„")Remove this unused private "test" method.(¬ÊµË
+csquid:UselessImportCheck"?Remove this unused import 'io.reactivex.ObservableOnSubscribe'.(¹¾
+esquid:UselessImportCheck"<Remove this unused import 'android.app.NotificationChannel'.(ÒÒ…·ıÿÿÿÿ
+isquid:UselessImportCheck"@Remove this unused import 'io.reactivex.subjects.ReplaySubject'.(šÖ€¬ûÿÿÿÿ
+Dsquid:S1659""-Declare "sendUpstreamMsg" on a separate line.(—âæÊ
+jsquid:UselessImportCheck"ARemove this unused import 'io.reactivex.subjects.PublishSubject'.(”‘¡ÿùÿÿÿÿ
+Fsquid:S1659""/Declare "unsubscribeButton" on a separate line.(—âæÊ
+_squid:UselessImportCheck";Remove this unused import 'io.reactivex.ObservableEmitter'.(¥Óó„
+ksquid:S00116!"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸ğøÿÿÿÿ
+bsquid:CommentedOutCodeLineP"<This block of commented-out lines of code should be removed.(«¼­ã
+Usquid:UselessImportCheck"1Remove this unused import 'java.util.Observable'.(Ê²ê¸
+esquid:UselessImportCheck"<Remove this unused import 'android.app.NotificationManager'.(¸˜ùÑûÿÿÿÿ
